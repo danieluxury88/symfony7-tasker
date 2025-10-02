@@ -2,8 +2,6 @@
 
 Mini-proyecto de evaluación técnica: una aplicación **Symfony 7** con un **CRUD** para gestionar una lista de tareas (**Task**). Cumple estrictamente los requisitos solicitados: entidad `Task`, operaciones de **crear / listar / editar / eliminar**, uso de **Doctrine ORM**, base de datos **SQLite**, **sin sistema de autenticación** (pero manteniendo `createdBy` como **FK** a un `User` mínimo creado por fixtures), validaciones básicas y pruebas automáticas.
 
-> 🎥 **Video demo**: *(agrega aquí el enlace no listado a YouTube/Vimeo cuando lo tengas)*
-
 ---
 
 ## Características
@@ -22,7 +20,6 @@ Mini-proyecto de evaluación técnica: una aplicación **Symfony 7** con un **CR
 * **Fixtures**: crean un usuario demo y varias tareas de ejemplo.
 * **Pruebas automáticas** (PHPUnit): validación de `title` + flujo CRUD básico.
 * **UI**: Bootstrap 5 por CDN (estilos mínimos, sin JS complejo).
-  *(Si se dispone de tiempo extra, el repo incluye ejemplos opcionales con HTMX para “toggle” de completado.)*
 
 > **Nota sobre usuarios**: No hay login/registro. La relación `createdBy` existe para cumplir el requerimiento y apunta a un **usuario demo** creado por fixtures.
 
@@ -52,7 +49,7 @@ Mini-proyecto de evaluación técnica: una aplicación **Symfony 7** con un **CR
 
 ```bash
 # 1) Clonar el repositorio
-git clone https://github.com/<tu-usuario>/symfony7-tasker.git
+git clone https://github.com/danieluxury88/symfony7-tasker.git
 cd symfony7-tasker
 
 # 2) Instalar dependencias
@@ -165,24 +162,6 @@ tests/
 * **Bootstrap por CDN**: Permite una UI adecuada sin configuración adicional de build.
 * **CSRF y Validación**: Formularios protegidos y constraints esenciales en `Task`.
 
----
-
-## Mejoras opcionales (no exigidas)
-
-* Filtros de búsqueda y por estado (pendiente/completada).
-* Paginación.
-* “Toggle” de completado con **HTMX** (sin recargar la página).
-* Docker (PHP-FPM + Nginx/Caddy) y GitHub Actions para CI.
-
----
-
-## Solución de problemas
-
-* **Extensión `pdo_sqlite`**: si falta, actívala en tu `php.ini`.
-* **Permisos en `var/`**: asegúrate de que PHP pueda escribir en `var/cache` y `var/log`.
-* **Errores de migraciones**: puedes resetear la DB en local con
-  `bin/console doctrine:schema:drop --full-database --force`
-  y luego `bin/console doctrine:migrations:migrate -n` + `bin/console doctrine:fixtures:load -n`.
 
 ---
 
@@ -196,6 +175,6 @@ MIT © Daniel Proaño
 
 * **Autor**: Daniel Proaño
 * **Email**: daniel.proano.88@gmail.com
-* **LinkedIn**: https://www.linkedin.com/in/daniel-proano/
+* **LinkedIn**: https://www.linkedin.com/in/danielproano88/
 
 ---

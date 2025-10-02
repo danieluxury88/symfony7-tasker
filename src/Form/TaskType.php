@@ -42,17 +42,6 @@ class TaskType extends AbstractType
                 ],
                 'required' => false,
             ])
-            ->add('createdAt', null, [
-                'widget' => 'single_text',
-                'attr' => [
-                    'class' => 'form-control',
-                    'type' => 'datetime-local',
-                    'required' => true,
-                    'max' => (new \DateTime('+1 minute'))->format('Y-m-d\TH:i'),
-                ],
-                'required' => true,
-                'data' => new \DateTimeImmutable(), // Default to current date/time
-            ])
             ->add('createdBy', EntityType::class, [
                 'class' => User::class,
                 'choice_label' => 'email',

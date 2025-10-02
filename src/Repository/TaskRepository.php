@@ -16,6 +16,30 @@ class TaskRepository extends ServiceEntityRepository
         parent::__construct($registry, Task::class);
     }
 
+    /**
+     * @return Task[] Returns an array of Task objects sorted by the specified field and direction
+     */
+    public function findAllSorted(?string $sortBy = 'id', string $direction = 'ASC'): array
+    {
+        $validSortFields = ['id', 'title', 'description', 'isCompleted', 'createdAt'];
+        
+        // Default to 'id' if invalid sort field provided
+        if (!in_array($sortBy, $validSortFields)) {
+            $sortBy = 'id';
+        }
+        
+        // Ensure direction is valid
+        $direction = strtoupper($direction);
+        if (!in_array($direction, ['ASC', 'DESC'])) {
+            $direction = 'ASC';
+        }
+        
+        return $this->createQueryBuilder('t')
+            ->orderBy('t.' . $sortBy, $direction)
+            ->getQuery()
+            ->getResult();
+    }
+
     //    /**
     //     * @return Task[] Returns an array of Task objects
     //     */

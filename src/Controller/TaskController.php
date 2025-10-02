@@ -16,10 +16,15 @@ use Symfony\Component\Routing\Attribute\Route;
 final class TaskController extends AbstractController
 {
     #[Route(name: 'app_task_index', methods: ['GET'])]
-    public function index(TaskRepository $taskRepository): Response
+    public function index(Request $request, TaskRepository $taskRepository): Response
     {
+        $sortBy = $request->query->get('sort', 'id');
+        $direction = $request->query->get('direction', 'ASC');
+        
         return $this->render('task/index.html.twig', [
-            'tasks' => $taskRepository->findAll(),
+            'tasks' => $taskRepository->findAllSorted($sortBy, $direction),
+            'currentSort' => $sortBy,
+            'currentDirection' => $direction,
         ]);
     }
 
@@ -27,24 +32,24 @@ final class TaskController extends AbstractController
     public function new(Request $request, EntityManagerInterface $entityManager, UserRepository $userRepository): Response
     {
         $task = new Task();
-        
+
         // Set default values
         $task->setCreatedAt(new \DateTimeImmutable());
         $task->setIsCompleted(false);
-        
+
         // Set default user (first user from fixtures)
         $defaultUser = $userRepository->findOneBy(['email' => 'john.doe@example.com']);
         if ($defaultUser) {
             $task->setCreatedBy($defaultUser);
         }
-        
+
         $form = $this->createForm(TaskType::class, $task);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($task);
             $entityManager->flush();
-            
+
             $this->addFlash('success', 'Task created successfully!');
 
             return $this->redirectToRoute('app_task_index', [], Response::HTTP_SEE_OTHER);

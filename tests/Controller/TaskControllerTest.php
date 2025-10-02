@@ -67,7 +67,6 @@ final class TaskControllerTest extends WebTestCase
             'task[title]' => 'New Test Task',
             'task[description]' => 'This is a test task description',
             'task[isCompleted]' => false,
-            'task[createdAt]' => (new \DateTimeImmutable('-1 minute'))->format('Y-m-d\TH:i'),
             'task[createdBy]' => $user->getId(),
         ]);
 
@@ -105,7 +104,6 @@ final class TaskControllerTest extends WebTestCase
             'task[title]' => 'Updated Task Title',
             'task[description]' => 'Updated task description',
             'task[isCompleted]' => true,
-            'task[createdAt]' => (new \DateTimeImmutable('-1 minute'))->format('Y-m-d\TH:i'),
             'task[createdBy]' => $user->getId(),
         ]);
 
@@ -148,7 +146,7 @@ final class TaskControllerTest extends WebTestCase
         $purger = new ORMPurger($this->manager);
         $executor = new ORMExecutor($this->manager, $purger);
         $executor->execute($loader->getFixtures());
-        
+
         // Get the count of tasks before deletion
         $originalCount = $this->taskRepository->count([]);
         self::assertGreaterThan(0, $originalCount);
@@ -159,11 +157,11 @@ final class TaskControllerTest extends WebTestCase
         $this->client->submit($form);
 
         self::assertResponseRedirects($this->path);
-        
+
         // Follow the redirect to check flash message
         $this->client->followRedirect();
         self::assertSelectorTextContains('.alert-success', 'All tasks have been deleted successfully');
-        
+
         // Verify all tasks were deleted
         $newCount = $this->taskRepository->count([]);
         self::assertSame(0, $newCount);
@@ -186,7 +184,6 @@ final class TaskControllerTest extends WebTestCase
             'task[title]' => '', // Empty title should fail
             'task[description]' => 'This is a test task description',
             'task[isCompleted]' => false,
-            'task[createdAt]' => (new \DateTimeImmutable('-1 minute'))->format('Y-m-d\TH:i'),
             'task[createdBy]' => $user->getId(),
         ]);
 
@@ -195,7 +192,7 @@ final class TaskControllerTest extends WebTestCase
         self::assertSelectorTextContains('ul li', 'Task title cannot be empty'); // Should have validation errors
     }
 
-    public function testNewWithFutureDate(): void
+    public function testNewWithEmptyTitle(): void
     {
         $loader = new Loader();
         $loader->addFixture(new AppFixtures());
@@ -207,18 +204,16 @@ final class TaskControllerTest extends WebTestCase
         $this->client->request('GET', sprintf('%snew', $this->path));
         self::assertResponseStatusCodeSame(200);
 
-        // Test with future date (should fail validation)
+        // Test with empty title (should fail validation)
         $this->client->submitForm('Create Task', [
-            'task[title]' => 'Valid Task Title',
+            'task[title]' => '', // Empty title should fail
             'task[description]' => 'This is a test task description',
             'task[isCompleted]' => false,
-            'task[createdAt]' => (new \DateTimeImmutable('+1 hour'))->format('Y-m-d\TH:i'), // Future date should fail
             'task[createdBy]' => $user->getId(),
         ]);
 
         // Should not redirect (form has errors)
         self::assertResponseStatusCodeSame(422);
-        self::assertSelectorTextContains('ul li', 'Created date cannot be more than 1 minute in the future');
     }
 
     public function testEditFormDisplaysUpdateButton(): void
@@ -232,12 +227,13 @@ final class TaskControllerTest extends WebTestCase
         // Check that the Update Task button is present and not disabled
         self::assertSelectorExists('button[type="submit"]');
         self::assertSelectorTextContains('button[type="submit"]', 'Update Task');
-        
+
         // The button should have proper Bootstrap styling
         self::assertSelectorExists('button.btn-primary');
-        
+
         // Form should be populated with existing task data
         self::assertInputValueSame('task[title]', $task->getTitle());
-        self::assertInputValueSame('task[description]', $task->getDescription());
+        // Description is a textarea, so we check it differently
+        self::assertSelectorTextContains('textarea[name="task[description]"]', $task->getDescription());
     }
 }

@@ -40,11 +40,66 @@
                     <table class="table table-hover mb-0">
                         <thead class="table-light">
                             <tr>
-                                <th class="border-0"><i class="fas fa-hashtag text-muted"></i> ID</th>
-                                <th class="border-0"><i class="fas fa-heading text-muted"></i> Title</th>
-                                <th class="border-0"><i class="fas fa-align-left text-muted"></i> Description</th>
-                                <th class="border-0"><i class="fas fa-check-circle text-muted"></i> Status</th>
-                                <th class="border-0"><i class="fas fa-calendar text-muted"></i> Created</th>
+                                <th class="border-0">
+                                    <a href="{{ path('app_task_index', {sort: 'id', direction: currentSort == 'id' and currentDirection == 'ASC' ? 'DESC' : 'ASC'}) }}" 
+                                       class="text-decoration-none text-dark fw-semibold d-flex align-items-center"
+                                       style="cursor: pointer;"
+                                       onmouseover="this.style.color='#0d6efd';" 
+                                       onmouseout="this.style.color='';">
+                                        <i class="fas fa-hashtag text-muted me-1"></i> ID
+                                        {% if currentSort == 'id' %}
+                                            <i class="fas fa-chevron-{{ currentDirection == 'ASC' ? 'up' : 'down' }} text-primary ms-2"></i>
+                                        {% endif %}
+                                    </a>
+                                </th>
+                                <th class="border-0">
+                                    <a href="{{ path('app_task_index', {sort: 'title', direction: currentSort == 'title' and currentDirection == 'ASC' ? 'DESC' : 'ASC'}) }}" 
+                                       class="text-decoration-none text-dark fw-semibold d-flex align-items-center"
+                                       style="cursor: pointer;"
+                                       onmouseover="this.style.color='#0d6efd';" 
+                                       onmouseout="this.style.color='';">
+                                        <i class="fas fa-heading text-muted me-1"></i> Title
+                                        {% if currentSort == 'title' %}
+                                            <i class="fas fa-chevron-{{ currentDirection == 'ASC' ? 'up' : 'down' }} text-primary ms-2"></i>
+                                        {% endif %}
+                                    </a>
+                                </th>
+                                <th class="border-0">
+                                    <a href="{{ path('app_task_index', {sort: 'description', direction: currentSort == 'description' and currentDirection == 'ASC' ? 'DESC' : 'ASC'}) }}" 
+                                       class="text-decoration-none text-dark fw-semibold d-flex align-items-center"
+                                       style="cursor: pointer;"
+                                       onmouseover="this.style.color='#0d6efd';" 
+                                       onmouseout="this.style.color='';">
+                                        <i class="fas fa-align-left text-muted me-1"></i> Description
+                                        {% if currentSort == 'description' %}
+                                            <i class="fas fa-chevron-{{ currentDirection == 'ASC' ? 'up' : 'down' }} text-primary ms-2"></i>
+                                        {% endif %}
+                                    </a>
+                                </th>
+                                <th class="border-0">
+                                    <a href="{{ path('app_task_index', {sort: 'isCompleted', direction: currentSort == 'isCompleted' and currentDirection == 'ASC' ? 'DESC' : 'ASC'}) }}" 
+                                       class="text-decoration-none text-dark fw-semibold d-flex align-items-center"
+                                       style="cursor: pointer;"
+                                       onmouseover="this.style.color='#0d6efd';" 
+                                       onmouseout="this.style.color='';">
+                                        <i class="fas fa-check-circle text-muted me-1"></i> Status
+                                        {% if currentSort == 'isCompleted' %}
+                                            <i class="fas fa-chevron-{{ currentDirection == 'ASC' ? 'up' : 'down' }} text-primary ms-2"></i>
+                                        {% endif %}
+                                    </a>
+                                </th>
+                                <th class="border-0">
+                                    <a href="{{ path('app_task_index', {sort: 'createdAt', direction: currentSort == 'createdAt' and currentDirection == 'ASC' ? 'DESC' : 'ASC'}) }}" 
+                                       class="text-decoration-none text-dark fw-semibold d-flex align-items-center"
+                                       style="cursor: pointer;"
+                                       onmouseover="this.style.color='#0d6efd';" 
+                                       onmouseout="this.style.color='';">
+                                        <i class="fas fa-calendar text-muted me-1"></i> Created
+                                        {% if currentSort == 'createdAt' %}
+                                            <i class="fas fa-chevron-{{ currentDirection == 'ASC' ? 'up' : 'down' }} text-primary ms-2"></i>
+                                        {% endif %}
+                                    </a>
+                                </th>
                                 <th class="border-0 text-center"><i class="fas fa-cogs text-muted"></i> Actions</th>
                             </tr>
                         </thead>

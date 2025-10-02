@@ -1,6 +1,6 @@
 # Objetivo
 
-Entregar una aplicación **Symfony 7** con un **CRUD de Tareas (Task)**, autenticación de usuarios, buenas prácticas de seguridad/validación, README de instalación/uso y **video demostrativo**. Se optimiza para completar en 48h con foco en calidad y claridad.
+Entregar una aplicación **Symfony 7** con un **CRUD de Tareas (Task)**, autenticación de usuarios, buenas prácticas de seguridad/validación, README de instalación/uso y **video demostrativo**. Se optimiza para completar en un par de horas con foco en calidad y claridad.
 
 ---
 
@@ -25,7 +25,7 @@ Entregar una aplicación **Symfony 7** con un **CRUD de Tareas (Task)**, autenti
 
 ---
 
-# Estructura de trabajo por fases (48h)
+# Estructura de trabajo por fases
 
 **Fase 0 – Repo y baseline **
 
