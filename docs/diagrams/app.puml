@@ -1,0 +1,65 @@
+@startuml
+title App Structure - Tasker (Symfony 7)
+
+package "App\\Entity" {
+  class User
+  class Task
+}
+
+package "App\\Repository" {
+  class UserRepository {
+    +__construct(RegistryInterface)
+    +find(...)
+    +findOneBy(...)
+    +findAll(): User[]
+  }
+
+  class TaskRepository {
+    +__construct(RegistryInterface)
+    +find(...)
+    +findOneBy(...)
+    +findAll(): Task[]
+    +save(task: Task, flush: bool = false)
+    +remove(task: Task, flush: bool = false)
+  }
+}
+
+package "App\\Form" {
+  class TaskType {
+    +buildForm(FormBuilderInterface, array)
+    +configureOptions(OptionsResolver)
+  }
+}
+
+package "App\\Controller" {
+  class TaskController {
+    +index(Request): Response
+    +new(Request): Response
+    +edit(Request, Task): Response
+    +delete(Request, Task): Response
+  }
+}
+
+package "App\\DataFixtures" {
+  class UserFixtures {
+    +load(ObjectManager): void
+    +REF_USER_DEMO: string
+  }
+
+  class TaskFixtures {
+    +load(ObjectManager): void
+    +getDependencies(): array
+  }
+}
+
+' Relaciones entre capas
+TaskController --> TaskRepository : usa
+TaskController --> TaskType : usa
+TaskType --> Task : data_class
+TaskRepository --> Task : gestiona
+UserRepository --> User : gestiona
+TaskFixtures ..> UserFixtures : DependentFixtureInterface
+TaskFixtures --> Task : crea
+UserFixtures --> User : crea
+
+@enduml

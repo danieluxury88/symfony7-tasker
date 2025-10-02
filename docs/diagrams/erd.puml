@@ -1,0 +1,42 @@
+@startuml
+title Domain Model - Tasker (Symfony 7)
+
+class User {
+  +int id
+  +string email
+  +string? name
+  --
+  +getId(): int
+  +getEmail(): string
+  +setEmail(email: string): User
+  +getName(): string?
+  +setName(name: string?): User
+  +getTasks(): Collection<Task>
+  +addTask(task: Task): User
+  +removeTask(task: Task): User
+}
+
+class Task {
+  +int id
+  +string title
+  +string? description
+  +bool isCompleted = false
+  +DateTimeImmutable createdAt
+  +User createdBy
+  --
+  +getId(): int
+  +getTitle(): string
+  +setTitle(title: string): Task
+  +getDescription(): string?
+  +setDescription(desc: string?): Task
+  +isCompleted(): bool
+  +setIsCompleted(flag: bool): Task
+  +getCreatedAt(): DateTimeImmutable
+  +setCreatedAt(dt: DateTimeImmutable): Task
+  +getCreatedBy(): User
+  +setCreatedBy(user: User): Task
+}
+
+User "1" o-- "0..*" Task : createdBy
+
+@enduml
