@@ -42,6 +42,22 @@ final class TaskController extends AbstractController
         ]);
     }
 
+    #[Route('/delete-all', name: 'app_task_delete_all', methods: ['POST'])]
+    public function deleteAll(Request $request, TaskRepository $taskRepository, EntityManagerInterface $entityManager): Response
+    {
+        if ($this->isCsrfTokenValid('delete_all_tasks', $request->getPayload()->getString('_token'))) {
+            $tasks = $taskRepository->findAll();
+            foreach ($tasks as $task) {
+                $entityManager->remove($task);
+            }
+            $entityManager->flush();
+
+            $this->addFlash('success', 'All tasks have been deleted successfully.');
+        }
+
+        return $this->redirectToRoute('app_task_index', [], Response::HTTP_SEE_OTHER);
+    }
+
     #[Route('/{id}', name: 'app_task_show', methods: ['GET'])]
     public function show(Task $task): Response
     {

@@ -49,7 +49,7 @@ final class TaskControllerTest extends WebTestCase
         $crawler = $this->client->request('GET', $this->path);
 
         self::assertResponseStatusCodeSame(200);
-        self::assertPageTitleContains('Task index');
+        self::assertPageTitleContains('Tasker');
 
         // Check that we have 10 tasks from fixtures
         $this->assertCount(10, $this->taskRepository->findAll());
@@ -138,5 +138,26 @@ final class TaskControllerTest extends WebTestCase
         // Verify the task is actually deleted
         $deletedTask = $this->taskRepository->find($task->getId());
         self::assertNull($deletedTask);
+    }
+
+    public function testDeleteAll(): void
+    {
+        // Verify we have tasks from fixtures
+        $originalCount = $this->taskRepository->count([]);
+        self::assertGreaterThan(0, $originalCount);
+
+        // Submit the delete all form with CSRF token
+        $crawler = $this->client->request('GET', $this->path);
+        $form = $crawler->selectButton('Delete All Tasks')->form();
+        $this->client->submit($form);
+
+        self::assertResponseRedirects($this->path);
+        
+        // Follow the redirect to check flash message
+        $this->client->followRedirect();
+        self::assertSelectorTextContains('.alert-success', 'All tasks have been deleted successfully.');
+
+        // Verify all tasks are deleted
+        self::assertSame(0, $this->taskRepository->count([]));
     }
 }
