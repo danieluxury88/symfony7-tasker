@@ -63,7 +63,7 @@ final class TaskControllerTest extends WebTestCase
         $this->client->request('GET', sprintf('%snew', $this->path));
         self::assertResponseStatusCodeSame(200);
 
-        $this->client->submitForm('Save', [
+        $this->client->submitForm('Create Task', [
             'task[title]' => 'New Test Task',
             'task[description]' => 'This is a test task description',
             'task[isCompleted]' => false,
@@ -101,7 +101,7 @@ final class TaskControllerTest extends WebTestCase
         $this->client->request('GET', sprintf('%s%s/edit', $this->path, $task->getId()));
         self::assertResponseStatusCodeSame(200);
 
-        $this->client->submitForm('Update', [
+        $this->client->submitForm('Update Task', [
             'task[title]' => 'Updated Task Title',
             'task[description]' => 'Updated task description',
             'task[isCompleted]' => true,
@@ -152,7 +152,7 @@ final class TaskControllerTest extends WebTestCase
         $this->client->submit($form);
 
         self::assertResponseRedirects($this->path);
-        
+
         // Follow the redirect to check flash message
         $this->client->followRedirect();
         self::assertSelectorTextContains('.alert-success', 'All tasks have been deleted successfully.');

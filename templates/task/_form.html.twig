@@ -1,4 +1,28 @@
-{{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
+{{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': true}}) }}
+    <div class="mb-3">
+        {{ form_label(form.title, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
+        {{ form_widget(form.title, {'attr': {'class': 'form-control', 'placeholder': 'Enter task title...'}}) }}
+        {{ form_errors(form.title) }}
+    </div>
+    
+    <div class="mb-3">
+        {{ form_label(form.description, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
+        {{ form_widget(form.description, {'attr': {'class': 'form-control', 'rows': 4, 'placeholder': 'Enter task description...'}}) }}
+        {{ form_errors(form.description) }}
+    </div>
+    
+    <div class="mb-4">
+        <div class="form-check">
+            {{ form_widget(form.isCompleted, {'attr': {'class': 'form-check-input'}}) }}
+            {{ form_label(form.isCompleted, null, {'label_attr': {'class': 'form-check-label'}}) }}
+        </div>
+        {{ form_errors(form.isCompleted) }}
+    </div>
+    
+    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+        <button type="submit" class="btn btn-{{ button_label|default('Save') == 'Create Task' ? 'success' : 'primary' }} btn-lg">
+            <i class="fas fa-{{ button_label|default('Save') == 'Create Task' ? 'plus' : 'save' }}"></i>
+            {{ button_label|default('Save') }}
+        </button>
+    </div>
 {{ form_end(form) }}

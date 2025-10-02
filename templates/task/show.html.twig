@@ -1,38 +1,89 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Task{% endblock %}
+{% block title %}Task #{{ task.id }} - Tasker{% endblock %}
 
 {% block body %}
-    <h1>Task</h1>
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="h2 text-primary">
+                    <i class="fas fa-eye"></i> Task Details
+                </h1>
+                <a href="{{ path('app_task_index') }}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left"></i> Back to List
+                </a>
+            </div>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ task.id }}</td>
-            </tr>
-            <tr>
-                <th>Title</th>
-                <td>{{ task.title }}</td>
-            </tr>
-            <tr>
-                <th>Description</th>
-                <td>{{ task.description }}</td>
-            </tr>
-            <tr>
-                <th>IsCompleted</th>
-                <td>{{ task.isCompleted ? 'Yes' : 'No' }}</td>
-            </tr>
-            <tr>
-                <th>CreatedAt</th>
-                <td>{{ task.createdAt ? task.createdAt|date('Y-m-d H:i:s') : '' }}</td>
-            </tr>
-        </tbody>
-    </table>
-
-    <a href="{{ path('app_task_index') }}">back to list</a>
-
-    <a href="{{ path('app_task_edit', {'id': task.id}) }}">edit</a>
-
-    {{ include('task/_delete_form.html.twig') }}
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-info-circle"></i> Task #{{ task.id }}
+                        </h5>
+                        {% if task.isCompleted %}
+                            <span class="badge bg-success">
+                                <i class="fas fa-check"></i> Completed
+                            </span>
+                        {% else %}
+                            <span class="badge bg-warning text-dark">
+                                <i class="fas fa-clock"></i> Pending
+                            </span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-3 fw-bold text-muted">Title:</div>
+                        <div class="col-sm-9">{{ task.title }}</div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-3 fw-bold text-muted">Description:</div>
+                        <div class="col-sm-9">
+                            <div class="border rounded p-3 bg-light">
+                                {{ task.description|nl2br }}
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-3 fw-bold text-muted">Status:</div>
+                        <div class="col-sm-9">
+                            {% if task.isCompleted %}
+                                <span class="badge bg-success fs-6">
+                                    <i class="fas fa-check-circle"></i> Completed
+                                </span>
+                            {% else %}
+                                <span class="badge bg-warning text-dark fs-6">
+                                    <i class="fas fa-hourglass-half"></i> Pending
+                                </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-3 fw-bold text-muted">Created:</div>
+                        <div class="col-sm-9 text-muted">
+                            {{ task.createdAt ? task.createdAt|date('F j, Y \\a\\t g:i A') : 'N/A' }}
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-white">
+                    <div class="d-flex justify-content-between">
+                        <div class="btn-group" role="group">
+                            <a href="{{ path('app_task_edit', {'id': task.id}) }}" class="btn btn-primary">
+                                <i class="fas fa-edit"></i> Edit Task
+                            </a>
+                            <a href="{{ path('app_task_index') }}" class="btn btn-outline-secondary">
+                                <i class="fas fa-list"></i> View All
+                            </a>
+                        </div>
+                        <div>
+                            {{ include('task/_delete_form.html.twig') }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
