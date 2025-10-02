@@ -22,18 +22,18 @@ class TaskRepository extends ServiceEntityRepository
     public function findAllSorted(?string $sortBy = 'id', string $direction = 'ASC'): array
     {
         $validSortFields = ['id', 'title', 'description', 'isCompleted', 'createdAt'];
-        
+
         // Default to 'id' if invalid sort field provided
         if (!in_array($sortBy, $validSortFields)) {
             $sortBy = 'id';
         }
-        
+
         // Ensure direction is valid
         $direction = strtoupper($direction);
         if (!in_array($direction, ['ASC', 'DESC'])) {
             $direction = 'ASC';
         }
-        
+
         return $this->createQueryBuilder('t')
             ->orderBy('t.' . $sortBy, $direction)
             ->getQuery()

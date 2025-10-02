@@ -47,6 +47,33 @@ Mini-proyecto de evaluación técnica: una aplicación **Symfony 7** con un **CR
 
 ## Instalación
 
+### 🚀 Método Recomendado: Script de Instalación Automática
+
+El proyecto incluye un script de instalación que configura todo automáticamente:
+
+```bash
+# 1) Clonar el repositorio
+git clone https://github.com/danieluxury88/symfony7-tasker.git
+cd symfony7-tasker
+
+# 2) Ejecutar el script de instalación
+./install.sh
+```
+
+El script automáticamente:
+- ✅ Verifica los requisitos del sistema (PHP 8.2+, Composer)
+- ✅ Instala todas las dependencias de Composer
+- ✅ Configura el entorno de desarrollo (.env.local)
+- ✅ Crea y migra la base de datos SQLite
+- ✅ Carga fixtures con datos de ejemplo
+- ✅ Configura assets y cache
+- ✅ Ejecuta tests para verificar la instalación
+- ✅ Proporciona instrucciones de inicio
+
+### 🛠️ Instalación Manual (Alternativa)
+
+Si prefieres instalar manualmente:
+
 ```bash
 # 1) Clonar el repositorio
 git clone https://github.com/danieluxury88/symfony7-tasker.git
@@ -54,35 +81,51 @@ cd symfony7-tasker
 
 # 2) Instalar dependencias
 composer install
+
+# 3) Configurar entorno
+cp .env .env.local
+# Editar .env.local si es necesario
+
+# 4) Preparar la base de datos
+bin/console doctrine:database:create --if-not-exists
+bin/console doctrine:migrations:migrate -n
+bin/console doctrine:fixtures:load -n
+
+# 5) Configurar assets
+bin/console importmap:install
+bin/console asset-map:compile
 ```
+
+### Configuración de Base de Datos
 
 La app está configurada para usar **SQLite** por defecto:
 
 ```
 # .env
-DATABASE_URL="sqlite:///%kernel.project_dir%/var/data.db"
+DATABASE_URL="sqlite:///%kernel.project_dir%/var/data_%kernel.environment%.db"
 ```
 
 > Si deseas sobreescribir el DSN, crea un `.env.local` con tu `DATABASE_URL`.
 
-### Preparar la base de datos
-
-```bash
-# Crear/migrar el esquema
-bin/console doctrine:database:create --if-not-exists
-bin/console doctrine:migrations:migrate -n
-
-# (Opcional) limpiar tabla de migraciones si migraste más de una vez en local
-# bin/console doctrine:schema:drop --full-database --force
-# bin/console doctrine:migrations:migrate -n
-
-# Cargar fixtures (crea usuario demo y varias tareas)
-bin/console doctrine:fixtures:load -n
-```
-
 ---
 
 ## Ejecución
+
+### Después de usar el script de instalación
+
+El script te mostrará las instrucciones exactas al final, pero típicamente:
+
+```bash
+# Iniciar servidor de desarrollo
+symfony server:start
+# O alternativamente: php -S localhost:8000 -t public/
+
+# Abrir en el navegador
+# Con Symfony CLI: https://127.0.0.1:8000
+# Con PHP nativo: http://localhost:8000
+```
+
+### Inicio rápido manual
 
 Con Symfony CLI (recomendado):
 
@@ -97,6 +140,13 @@ O nativo en PHP:
 php -S 127.0.0.1:8000 -t public
 # abre http://127.0.0.1:8000
 ```
+
+### 🎯 Funcionalidades Disponibles
+
+- **Gestión completa de tareas**: Crear, editar, ver y eliminar
+- **Tabla ordenable**: Haz clic en cualquier encabezado (ID, Título, Descripción, Estado, Fecha) para ordenar
+- **Interfaz responsive**: Diseño Bootstrap optimizado para móvil y desktop
+- **Datos de ejemplo**: El script carga automáticamente tareas de prueba
 
 ---
 

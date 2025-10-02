@@ -20,7 +20,7 @@ final class TaskController extends AbstractController
     {
         $sortBy = $request->query->get('sort', 'id');
         $direction = $request->query->get('direction', 'ASC');
-        
+
         return $this->render('task/index.html.twig', [
             'tasks' => $taskRepository->findAllSorted($sortBy, $direction),
             'currentSort' => $sortBy,
