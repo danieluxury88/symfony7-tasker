@@ -1,28 +1,157 @@
-{{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': true}}) }}
+{{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': true, 'id': 'task-form'}}) }}
     <div class="mb-3">
         {{ form_label(form.title, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
-        {{ form_widget(form.title, {'attr': {'class': 'form-control', 'placeholder': 'Enter task title...'}}) }}
+        {{ form_widget(form.title) }}
+        <div class="invalid-feedback">
+            Please provide a valid task title (3-255 characters).
+        </div>
         {{ form_errors(form.title) }}
     </div>
-    
+
     <div class="mb-3">
         {{ form_label(form.description, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
-        {{ form_widget(form.description, {'attr': {'class': 'form-control', 'rows': 4, 'placeholder': 'Enter task description...'}}) }}
+        {{ form_widget(form.description) }}
+        <div class="invalid-feedback">
+            Description cannot exceed 1000 characters.
+        </div>
         {{ form_errors(form.description) }}
     </div>
-    
+
+    <div class="mb-3">
+        {{ form_label(form.createdAt, 'Created Date & Time', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+        {{ form_widget(form.createdAt) }}
+        <div class="form-text text-muted">
+            <i class="fas fa-info-circle"></i> Date cannot be in the future
+        </div>
+        <div class="invalid-feedback">
+            Please provide a valid date that is not in the future.
+        </div>
+        {{ form_errors(form.createdAt) }}
+    </div>
+
+    <div class="mb-3">
+        {{ form_label(form.createdBy, 'Created By', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+        {{ form_widget(form.createdBy) }}
+        <div class="invalid-feedback">
+            Please select who created this task.
+        </div>
+        {{ form_errors(form.createdBy) }}
+    </div>
+
     <div class="mb-4">
         <div class="form-check">
-            {{ form_widget(form.isCompleted, {'attr': {'class': 'form-check-input'}}) }}
+            {{ form_widget(form.isCompleted) }}
             {{ form_label(form.isCompleted, null, {'label_attr': {'class': 'form-check-label'}}) }}
         </div>
         {{ form_errors(form.isCompleted) }}
     </div>
-    
+
     <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-        <button type="submit" class="btn btn-{{ button_label|default('Save') == 'Create Task' ? 'success' : 'primary' }} btn-lg">
+        <button type="submit" class="btn btn-{{ button_label|default('Save') == 'Create Task' ? 'success' : 'primary' }} btn-lg" id="submit-btn">
             <i class="fas fa-{{ button_label|default('Save') == 'Create Task' ? 'plus' : 'save' }}"></i>
             {{ button_label|default('Save') }}
         </button>
     </div>
 {{ form_end(form) }}
+
+<script>
+// Client-side validation
+(function() {
+    'use strict';
+    
+    const form = document.getElementById('task-form');
+    const submitBtn = document.getElementById('submit-btn');
+    
+    if (form && submitBtn) {
+        // Custom validation for datetime field
+        function validateDateTime() {
+            const dateInput = form.querySelector('input[type="datetime-local"]');
+            if (dateInput) {
+                const selectedDate = new Date(dateInput.value);
+                const maxDate = new Date();
+                maxDate.setMinutes(maxDate.getMinutes() + 1); // Allow 1 minute buffer
+                
+                if (!dateInput.value) {
+                    dateInput.setCustomValidity('Created date is required');
+                    return false;
+                } else if (selectedDate > maxDate) {
+                    dateInput.setCustomValidity('Created date cannot be more than 1 minute in the future');
+                    return false;
+                } else {
+                    dateInput.setCustomValidity('');
+                    return true;
+                }
+            }
+            return true;
+        }
+        
+        // Real-time validation
+        form.addEventListener('input', function(event) {
+            if (event.target.type === 'datetime-local') {
+                validateDateTime();
+            }
+            
+            // Update submit button state
+            const isValid = form.checkValidity() && validateDateTime();
+            const isCreateForm = submitBtn.textContent.trim().includes('Create');
+            
+            // Be more lenient with edit forms - only disable if clearly invalid
+            if (!isValid && isCreateForm) {
+                submitBtn.disabled = true;
+                submitBtn.classList.remove('btn-success', 'btn-primary');
+                submitBtn.classList.add('btn-secondary');
+            } else {
+                // For edit forms, keep enabled unless there's a serious validation error
+                submitBtn.disabled = false;
+                submitBtn.classList.remove('btn-secondary');
+                submitBtn.classList.add('btn-{{ button_label|default('Save') == 'Create Task' ? 'success' : 'primary' }}');
+            }
+        });
+        
+        // Form submission validation
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            
+            const isDateValid = validateDateTime();
+            const isFormValid = form.checkValidity();
+            
+            if (isFormValid && isDateValid) {
+                // Show loading state
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+                submitBtn.disabled = true;
+                
+                // Submit the form
+                form.submit();
+            } else {
+                form.classList.add('was-validated');
+                
+                // Focus on first invalid field
+                const firstInvalid = form.querySelector(':invalid');
+                if (firstInvalid) {
+                    firstInvalid.focus();
+                }
+            }
+        });
+        
+        // Initial validation check - be less aggressive for edit forms
+        setTimeout(() => {
+            const isCreateForm = submitBtn.textContent.trim().includes('Create');
+            const isValid = form.checkValidity() && validateDateTime();
+            
+            // Only disable submit button for create forms that are invalid
+            // Edit forms should start enabled since they have valid existing data
+            if (isCreateForm && !isValid) {
+                submitBtn.disabled = true;
+                submitBtn.classList.remove('btn-success', 'btn-primary');
+                submitBtn.classList.add('btn-secondary');
+            } else {
+                // For edit forms or valid create forms, ensure button is enabled
+                submitBtn.disabled = false;
+                submitBtn.classList.remove('btn-secondary');
+                submitBtn.classList.add('btn-{{ button_label|default('Save') == 'Create Task' ? 'success' : 'primary' }}');
+            }
+        }, 100);
+    }
+})();
+</script>

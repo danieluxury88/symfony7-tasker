@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\TaskRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: TaskRepository::class)]
 class Task
@@ -15,15 +16,32 @@ class Task
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: 'Task title cannot be empty')]
+    #[Assert\Length(
+        min: 3,
+        max: 255,
+        minMessage: 'Task title must be at least {{ limit }} characters long',
+        maxMessage: 'Task title cannot be longer than {{ limit }} characters'
+    )]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Assert\Length(
+        max: 1000,
+        maxMessage: 'Task description cannot be longer than {{ limit }} characters'
+    )]
     private ?string $description = null;
 
     #[ORM\Column]
     private ?bool $isCompleted = null;
 
     #[ORM\Column]
+    #[Assert\NotBlank(message: 'Created date cannot be empty')]
+    #[Assert\Type(\DateTimeImmutable::class, message: 'Invalid date format')]
+    #[Assert\LessThanOrEqual(
+        value: '+1 minute',
+        message: 'Created date cannot be more than 1 minute in the future'
+    )]
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\ManyToOne(inversedBy: 'tasks')]
