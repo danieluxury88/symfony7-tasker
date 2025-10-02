@@ -19,21 +19,38 @@ Mini-proyecto de evaluación técnica: una aplicación **Symfony 7** con un **CR
 * **Base de datos**: SQLite (portabilidad y facilidad de instalación).
 * **Fixtures**: crean un usuario demo y varias tareas de ejemplo.
 * **Pruebas automáticas** (PHPUnit): validación de `title` + flujo CRUD básico.
-* **UI**: Bootstrap 5 por CDN (estilos mínimos, sin JS complejo).
+* **UI**: Bootstrap 5 integrado vía Asset Mapper (diseño responsive, componentes modernos).
+* **Tabla ordenable**: Funcionalidad de sorting por encabezados (ID, Título, Descripción, Estado, Fecha).
 
 > **Nota sobre usuarios**: No hay login/registro. La relación `createdBy` existe para cumplir el requerimiento y apunta a un **usuario demo** creado por fixtures.
 
 ---
 
-## Tecnologías
+## Tecnologías y Bundles
 
+### Core Symfony
 * PHP **8.2+**
-* Symfony **7.x** (`symfony/framework-bundle`, `twig`)
-* Doctrine ORM + Migrations
+* Symfony **7.3.x** (`symfony/framework-bundle`, `symfony/twig-bundle`)
+* Doctrine ORM + Migrations Bundle
 * SQLite
 * Symfony Validator, Form, CSRF
-* Bootstrap 5 (CDN)
-* PHPUnit
+
+### Bundles Adicionales
+* **symfony/maker-bundle** - Generación de código (entidades, controladores, formularios)
+* **symfony/asset-mapper** - Gestión moderna de assets sin Node.js
+* **doctrine/doctrine-fixtures-bundle** - Carga de datos de prueba
+* **symfony/stimulus-bundle** - Integración con Stimulus (Hotwired)
+* **symfony/ux-turbo** - Navegación SPA-like sin JavaScript complejo
+* **symfony/web-profiler-bundle** - Debugging y profiling (solo desarrollo)
+
+### Frontend
+* **Bootstrap 5.3.x** - Framework CSS moderno integrado vía Asset Mapper
+* **Font Awesome** - Iconografía
+* **Stimulus** - JavaScript ligero y estructurado
+
+### Testing
+* **PHPUnit 12.x** - Testing framework
+* **symfony/browser-kit** - Testing de aplicaciones web
 
 ---
 
@@ -182,25 +199,39 @@ Los tests incluidos cubren:
 ```
 src/
   Controller/
-    TaskController.php
+    TaskController.php       # CRUD con sorting
   Entity/
-    Task.php
-    User.php         # Entidad mínima para soportar la FK createdBy
+    Task.php                # Entidad principal
+    User.php                # Entidad mínima para soportar FK createdBy
   Form/
-    TaskType.php
+    TaskType.php            # Formulario Symfony
   Repository/
-    TaskRepository.php
+    TaskRepository.php      # Consultas personalizadas con sorting
+  DataFixtures/
+    AppFixtures.php         # Datos de prueba
+assets/
+  app.js                    # Stimulus controllers
+  bootstrap.js              # Bootstrap y dependencias
+  styles/
+    app.css                 # Estilos personalizados
+  controllers/              # Stimulus controllers
 templates/
-  base.html.twig
+  base.html.twig            # Layout base con Asset Mapper
   task/
-    index.html.twig
-    new.html.twig
-    edit.html.twig
+    index.html.twig         # Lista con tabla ordenable
+    new.html.twig           # Formulario de creación
+    edit.html.twig          # Formulario de edición
+    show.html.twig          # Vista detallada
 tests/
-  Functional/
-    TaskCrudTest.php
-  Unit/
-    TaskValidationTest.php
+  Controller/
+    TaskControllerTest.php  # Tests funcionales
+  FixturesLoadedTest.php    # Tests de fixtures
+config/
+  packages/
+    asset_mapper.yaml       # Configuración Asset Mapper
+    doctrine_migrations.yaml
+    doctrine.yaml
+install.sh                  # Script de instalación automática
 ```
 
 ---
@@ -208,9 +239,13 @@ tests/
 ## Decisiones y alcance
 
 * **Sin autenticación**: El requerimiento no la menciona; se minimiza el alcance. Se conserva `createdBy` como FK hacia `User` para satisfacer la especificación. El `User` se crea únicamente vía fixtures.
-* **SQLite**: Simplifica la evaluación y ejecución local.
-* **Bootstrap por CDN**: Permite una UI adecuada sin configuración adicional de build.
+* **SQLite**: Simplifica la evaluación y ejecución local sin configuración adicional de base de datos.
+* **Asset Mapper**: Moderna gestión de assets sin Node.js, integrando Bootstrap 5 y Stimulus de forma nativa.
+* **Maker Bundle**: Facilita la generación de código y prototipado rápido.
+* **Doctrine Fixtures**: Permite cargar datos de prueba consistentes para desarrollo y testing.
+* **Tabla ordenable**: Implementación server-side para mejor rendimiento con grandes datasets.
 * **CSRF y Validación**: Formularios protegidos y constraints esenciales en `Task`.
+* **UX Bundles**: Stimulus y Turbo para interactividad moderna sin JavaScript complejo.
 
 
 ---
